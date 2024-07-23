@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Add a user to a Linux (RHEL) system
+# Author:  Jeffrey Fields
+# Email:  jkfields at yahoo
+
+CHAGE="/usr/bin/chage -d0"
+CHPASSWD="/usr/sbin/chpasswd"
+EGREP="/usr/bin/egrep"
+ID="/usr/bin/id -u"
+SUDO="/usr/bin/sudo"
+USERADD="/usr/sbin/useradd"
+USERMOD="/usr/sbin/usermod"
+
+# get username and verify it is available for use
+read -p "Enter the user's username: " username
+
+# if it already exists, exit
+$EGREP -e "^$username" /etc/passwd >/dev/null
+if [ $? -eq 0 ]; then
+    echo "Account already exists!  Exiting..."
+    exit 1
+fi
+
+# get remaining account information
+read -p "Enter ${username}'s first name: " firstname
+read -p "Enter ${username}'s last name: " lastname
+read -p "Is ${username} an Administrator? (Y|N) " adminuser
+
+# get the user's temporary password
+password="password"
+confirm-"confirm"
+
+until [ "${passwd}" == "${confirm}" ]
+do
+    read -p "Enter ${username}'s temporary password: " password
+    echo
+    read -p "\Retype ${username}'s temporary password to confirm: " confirm
+    echo
+    if [ "${password}" != "${confirm}" ]; then
+        echo "Passwords do not match."
+        echo
+done
+
+# if not root, add sudo to commands
+if [ $($ID) -ne 0 ]; then
+    CHAGE="$SUDO $CHAGE"
+    CHPASSWD="$SUDO $CHPASSWD"
+    USERADD="$SUDO $USERADD"
+    USERMOD="$SUDO $USERMOD"
+fi
+
+$USERADD --create-home -c "${firstname} ${lastname}" $username
+if [ $? -eq 0 ]; then
+    echo "User $userame was added to the system."
+
+    # set the temporary password
+    echo "${username}:${password}" | $CHPASSWD
+
+    # force password change on first login
+    $CHAGE $username
+
+    # if the user is an administrator, add admin and wheel groups
+    if [ "${adminuser}" == "Y" ]
+        $USERMOD --groups admin,wheel $username
+        if [ $? -eq 0 ]; then
+            echo "User $username added to administrative groups."
+        else:
+            echo "Failed to add $username to administrative groups!"
+        fi
+    fi
+
+else
+    echo "Failed to add $username to the system!"
+    exit 2
+fi
