@@ -31,7 +31,7 @@ read -p "Is ${username} an Administrator? (Y|N) " adminuser
 password="password"
 confirm="confirm"
 
-until [ "${passwd}" == "${confirm}" ]
+until [ "${password}" == "${confirm}" ]
 do
     read -p "Enter ${username}'s temporary password: " password
     echo
