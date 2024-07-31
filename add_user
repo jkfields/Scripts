@@ -40,6 +40,7 @@ do
     if [ "${password}" != "${confirm}" ]; then
         echo "Passwords do not match."
         echo
+    fi
 done
 
 # if not root, add sudo to commands
