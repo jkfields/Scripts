@@ -13,7 +13,7 @@ USERADD="/usr/sbin/useradd"
 USERMOD="/usr/sbin/usermod"
 
 # get username and verify it is available for use
-read -p "Enter the user's username: " username
+read -p "Enter username: " username
 
 # if it already exists, exit
 $EGREP -e "^$username" /etc/passwd >/dev/null
@@ -23,9 +23,9 @@ if [ $? -eq 0 ]; then
 fi
 
 # get remaining account information
-read -p "Enter ${username}'s first name: " firstname
-read -p "Enter ${username}'s last name: " lastname
-read -p "Is ${username} an Administrator? (Y|N) " adminuser
+read -p "Enter user's first name: " firstname
+read -p "Enter user's last name: " lastname
+read -p "Is the user an Administrator? (Y|N) " adminuser
 
 # get the user's temporary password
 password="password"
@@ -33,9 +33,9 @@ confirm="confirm"
 
 until [ "${password}" == "${confirm}" ]
 do
-    read -sp "Enter ${username}'s temporary password: " password
+    read -sp "Enter user's temporary password: " password
     echo
-    read -sp "Retype ${username}'s temporary password to confirm: " confirm
+    read -sp "Retype user's temporary password to confirm: " confirm
     echo
     if [ "${password}" != "${confirm}" ]; then
         echo "Passwords do not match."
