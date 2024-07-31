@@ -33,9 +33,9 @@ confirm="confirm"
 
 until [ "${password}" == "${confirm}" ]
 do
-    read -p "Enter ${username}'s temporary password: " password
+    read -sp "Enter ${username}'s temporary password: " password
     echo
-    read -p "\Retype ${username}'s temporary password to confirm: " confirm
+    read -sp "Retype ${username}'s temporary password to confirm: " confirm
     echo
     if [ "${password}" != "${confirm}" ]; then
         echo "Passwords do not match."
